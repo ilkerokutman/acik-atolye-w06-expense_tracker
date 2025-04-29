@@ -31,7 +31,7 @@ class DbProvider {
   Future<Database> _initDatabase() async {
     // Get the directory path for both Android and iOS
     String path = join(await getDatabasesPath(), _databaseName);
-    
+
     return await openDatabase(
       path,
       version: _databaseVersion,
@@ -41,8 +41,10 @@ class DbProvider {
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
+    await db.execute('DROP TABLE IF EXISTS $expenseTable');
+    
     await db.execute('''
-      CREATE TABLE $expenseTable (
+      CREATE TABLE IF NOT EXISTS $expenseTable (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
         $columnTitle TEXT NOT NULL,
         $columnAmount REAL NOT NULL,
@@ -63,21 +65,16 @@ class DbProvider {
   // Query all rows
   Future<List<Expense>> queryAllRows() async {
     Database db = await instance.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      expenseTable,
-      orderBy: '$columnDate DESC'
-    );
+    final List<Map<String, dynamic>> maps =
+        await db.query(expenseTable, orderBy: '$columnDate DESC');
     return List.generate(maps.length, (i) => Expense.fromMap(maps[i]));
   }
 
   // Query specific row
   Future<Expense?> queryRow(int id) async {
     Database db = await instance.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      expenseTable,
-      where: '$columnId = ?',
-      whereArgs: [id]
-    );
+    final List<Map<String, dynamic>> maps =
+        await db.query(expenseTable, where: '$columnId = ?', whereArgs: [id]);
     if (maps.isEmpty) return null;
     return Expense.fromMap(maps.first);
   }
@@ -112,9 +109,8 @@ class DbProvider {
   // Get total expenses
   Future<double> getTotalExpenses() async {
     Database db = await instance.database;
-    List<Map<String, dynamic>> result = await db.rawQuery(
-      'SELECT SUM($columnAmount) as total FROM $expenseTable'
-    );
+    List<Map<String, dynamic>> result = await db
+        .rawQuery('SELECT SUM($columnAmount) as total FROM $expenseTable');
     return result.first['total'] ?? 0.0;
   }
 
@@ -126,12 +122,13 @@ class DbProvider {
       FROM $expenseTable
       GROUP BY $columnCategory
     ''');
-    
+
     return Map.fromEntries(
       results.map((row) => MapEntry(
-        ExpenseCategory.values.firstWhere((e) => e.name == row[columnCategory]),
-        (row['total'] as num).toDouble(),
-      )),
+            ExpenseCategory.values
+                .firstWhere((e) => e.name == row[columnCategory]),
+            (row['total'] as num).toDouble(),
+          )),
     );
   }
 

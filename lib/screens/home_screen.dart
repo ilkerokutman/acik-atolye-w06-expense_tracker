@@ -1,3 +1,4 @@
+import 'package:expense_tracker/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -60,9 +61,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Category breakdown
                 const Text(
                   'Kategoriye Göre Harcamalar',
@@ -86,20 +87,22 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           CategoryPieChart(
-                            expensesByCategory: expenseProvider.expensesByCategory,
+                            expensesByCategory:
+                                expenseProvider.expensesByCategory,
                             totalExpenses: expenseProvider.totalExpenses,
                           ),
                           const SizedBox(height: 16),
                           CategoryLegend(
-                            expensesByCategory: expenseProvider.expensesByCategory,
+                            expensesByCategory:
+                                expenseProvider.expensesByCategory,
                           ),
                         ],
                       ),
                     ),
                   ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Weekly expenses
                 const Text(
                   'Haftalık Harcamalar',
@@ -125,7 +128,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                
+
                 const SizedBox(height: 16),
               ],
             ),
