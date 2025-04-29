@@ -1,7 +1,7 @@
 # Week 6 - Expense Tracker App
 
-This is the starter project for the **Week 6 Expense Tracker App** in the Flutter course.  
-The app demonstrates advanced UI design, custom theming, and dynamic theme switching.
+This is the **Week 6 Expense Tracker App** in the Flutter course.  
+The app demonstrates advanced UI design, custom theming, dynamic theme switching, and follows best practices for Flutter application architecture with Provider state management and SQLite local storage.
 
 ---
 
@@ -10,35 +10,83 @@ The app demonstrates advanced UI design, custom theming, and dynamic theme switc
 - **Expense Tracking**:
   - Users can input expenses with details such as amount, category, and date.
   - Display a summary of expenses in a clean UI.
+  - Edit and delete existing expenses.
+  - Filter expenses by category and date range.
+
 - **Light/Dark Themes**:
   - Supports dynamic switching between light and dark themes.
+  - Persistent theme preference across app restarts.
+
 - **Data Visualization**:
-  - Shows expenses in a visual format, such as bar or pie charts.
+  - Weekly expense trends displayed as bar charts.
+  - Category distribution shown as interactive pie charts.
+  - Summary statistics for total spending.
+
+- **Local Storage**:
+  - All expense data is stored locally using SQLite.
+  - Data persists between app sessions.
 
 ---
 
 ## Concepts Covered
 
+- **Architecture Pattern**:
+  - Provider pattern for state management.
+  - Separation of UI, business logic, and data layers.
+
 - **Custom Theming**:
-  - Define light and dark themes using `theme` and `darkTheme` properties in `GetMaterialApp`.
+  - Define light and dark themes using `theme` and `darkTheme` properties in `MaterialApp`.
   - Toggle themes dynamically with `themeMode`.
+
 - **Reusable Widgets**:
   - Build modular, reusable components for consistent UI design.
+  - Component-based architecture for better maintainability.
+
 - **Advanced UI Design**:
   - Use widgets like `Card`, `ListView`, and custom charts to create a polished application.
+  - Responsive layouts that adapt to different screen sizes.
+
+- **Local Data Persistence**:
+  - SQLite database integration for storing expense data.
+  - CRUD operations for expense management.
+
+- **Data Visualization**:
+  - Implementation of charts using the `fl_chart` package.
+  - Dynamic data representation based on user expenses.
 
 ---
 
-## Project Structure
+## Project Structure & Architecture
+
+The application follows a clean architecture pattern with separation of concerns:
 
 - **Main Code**: Located in `lib/main.dart`.
+
 - **Screens**:
+  - `home_screen.dart`: Main dashboard with expense summary and charts.
   - `expense_list_screen.dart`: Displays a list of expenses.
-  - `expense_summary_screen.dart`: Provides a visual representation of expenses.
+  - `expense_form_screen.dart`: Form for adding/editing expenses.
+  - `settings_screen.dart`: App settings and theme configuration.
+  - `main_screen.dart`: Container screen with bottom navigation.
+
+- **Models**:
+  - `expense.dart`: Data model for expenses with category enum.
+
+- **Providers** (State Management):
+  - `expense_provider.dart`: Manages expense data and operations.
+  - `theme_provider.dart`: Handles theme switching functionality.
+
+- **Database**:
+  - `db_provider.dart`: SQLite database implementation for local storage.
+
 - **Widgets**:
-  - Reusable components such as expense cards and custom charts.
+  - `expense_card.dart`: Reusable card for displaying expense items.
+  - `weekly_chart.dart`: Bar chart for weekly expense visualization.
+  - `category_chart.dart`: Pie chart for category-based expense breakdown.
+  - Other reusable UI components.
+
 - **Theme**:
-  - Centralized theme definitions in a `theme.dart` file.
+  - `app_theme.dart`: Centralized theme definitions for light and dark modes.
 
 ---
 
@@ -69,7 +117,7 @@ git checkout <commit-hash>
    ```
 2. **Navigate to the Project Directory**:
    ```bash
-   cd w06-expense-tracker-app
+   cd acik-atolye-w06-expense_tracker
    ```
 3. **Run the App**:
    - Ensure you have Flutter installed.
