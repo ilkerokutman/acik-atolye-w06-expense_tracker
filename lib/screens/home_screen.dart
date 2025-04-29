@@ -1,8 +1,8 @@
-import 'package:expense_tracker/widgets/theme_switch.dart';
+import 'package:expense_tracker/controllers/expense_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import '../providers/expense_provider.dart';
+
 import '../widgets/category_chart.dart';
 import '../widgets/weekly_chart.dart';
 
@@ -11,17 +11,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpenseProvider>(
-      builder: (context, expenseProvider, _) {
-        if (expenseProvider.isLoading) {
+    return GetBuilder<ExpenseController>(
+      builder: (ec) {
+        if (ec.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
         final currencyFormat = NumberFormat.currency(symbol: '₺');
-        final weeklyExpenses = expenseProvider.getWeeklyExpenses();
+        final weeklyExpenses = ec.getWeeklyExpenses();
 
         return RefreshIndicator(
-          onRefresh: () => expenseProvider.loadExpenses(),
+          onRefresh: () => ec.loadExpenses(),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          currencyFormat.format(expenseProvider.totalExpenses),
+                          currencyFormat.format(ec.totalExpenses),
                           style: const TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '${expenseProvider.expenses.length} işlem',
+                          '${ec.expenses.length} işlem',
                           style: TextStyle(
                             color: Theme.of(context).textTheme.bodySmall?.color,
                           ),
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (expenseProvider.expensesByCategory.isEmpty)
+                if (ec.expensesByCategory.isEmpty)
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
@@ -87,14 +87,12 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           CategoryPieChart(
-                            expensesByCategory:
-                                expenseProvider.expensesByCategory,
-                            totalExpenses: expenseProvider.totalExpenses,
+                            expensesByCategory: ec.expensesByCategory,
+                            totalExpenses: ec.totalExpenses,
                           ),
                           const SizedBox(height: 16),
                           CategoryLegend(
-                            expensesByCategory:
-                                expenseProvider.expensesByCategory,
+                            expensesByCategory: ec.expensesByCategory,
                           ),
                         ],
                       ),

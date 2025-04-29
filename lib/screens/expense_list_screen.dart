@@ -1,7 +1,8 @@
+import 'package:expense_tracker/controllers/expense_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
+
 import '../models/expense.dart';
-import '../providers/expense_provider.dart';
 import '../widgets/expense_card.dart';
 import 'expense_form_screen.dart';
 
@@ -10,19 +11,19 @@ class ExpenseListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpenseProvider>(
-      builder: (context, expenseProvider, _) {
-        if (expenseProvider.isLoading) {
+    return GetBuilder<ExpenseController>(
+      builder: (ec) {
+        if (ec.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final expenses = expenseProvider.expenses;
+        final expenses = ec.expenses;
 
         return Scaffold(
           body: expenses.isEmpty
               ? _buildEmptyState(context)
               : RefreshIndicator(
-                  onRefresh: () => expenseProvider.loadExpenses(),
+                  onRefresh: () => ec.loadExpenses(),
                   child: ListView.builder(
                     itemCount: expenses.length,
                     itemBuilder: (context, index) {
@@ -30,7 +31,8 @@ class ExpenseListScreen extends StatelessWidget {
                       return ExpenseCard(
                         expense: expense,
                         onEdit: () => _navigateToEditExpense(context, expense),
-                        onDelete: () => _showDeleteConfirmation(context, expense),
+                        onDelete: () =>
+                            _showDeleteConfirmation(context, expense),
                       );
                     },
                   ),
@@ -52,7 +54,10 @@ class ExpenseListScreen extends StatelessWidget {
           Icon(
             Icons.receipt_long,
             size: 80,
-            color: Theme.of(context).colorScheme.primary.withAlpha(128), // 0.5 opacity = 128 alpha (255 * 0.5)
+            color: Theme.of(context)
+                .colorScheme
+                .primary
+                .withAlpha(128), // 0.5 opacity = 128 alpha (255 * 0.5)
           ),
           const SizedBox(height: 16),
           Text(
@@ -99,7 +104,8 @@ class ExpenseListScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Harcamayı Sil'),
-        content: Text('"${expense.title}" harcamasını silmek istediğinizden emin misiniz?'),
+        content: Text(
+            '"${expense.title}" harcamasını silmek istediğinizden emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -107,11 +113,11 @@ class ExpenseListScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              final expenseProvider = Provider.of<ExpenseProvider>(
-                context, 
-                listen: false
-              );
-              expenseProvider.deleteExpense(expense.id!);
+              // final expenseProvider =
+              //     Provider.of<ExpenseProvider>(context, listen: false);
+
+              final ExpenseController controller = Get.find();
+              controller.deleteExpense(expense.id!);
               Navigator.pop(context);
             },
             child: const Text(

@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import 'package:get/get.dart';
 
 class ThemeSwitch extends StatelessWidget {
   const ThemeSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    
     return SwitchListTile(
       title: const Text('Karanlık Mod'),
-      subtitle: Text(themeProvider.isDarkMode ? 'Açık' : 'Kapalı'),
+      subtitle: Text(Get.isDarkMode ? 'Açık' : 'Kapalı'),
       secondary: Icon(
-        themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-        color: themeProvider.isDarkMode ? Colors.amber : Colors.blueGrey,
+        Get.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+        color: Get.isDarkMode ? Colors.amber : Colors.blueGrey,
       ),
-      value: themeProvider.isDarkMode,
+      value: Get.isDarkMode,
       onChanged: (_) {
-        themeProvider.toggleTheme();
+        // themeProvider.toggleTheme();
+        Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
       },
     );
   }

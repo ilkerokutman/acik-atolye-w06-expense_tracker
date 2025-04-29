@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/expense_provider.dart';
+
 import 'home_screen.dart';
 import 'expense_list_screen.dart';
 import 'settings_screen.dart';
@@ -17,20 +16,21 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     // Load expenses when app starts
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Provider.of<ExpenseProvider>(context, listen: false).loadExpenses();
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (mounted) {
+    //     Provider.of<ExpenseProvider>(context, listen: false).loadExpenses();
+    //   }
+    // });
   }
+
   int _selectedIndex = 0;
-  
+
   final List<Widget> _screens = const [
     HomeScreen(),
     ExpenseListScreen(),
     SettingsScreen(),
   ];
-  
+
   final List<String> _titles = [
     'Özet',
     'Harcamalar',

@@ -1,7 +1,8 @@
+import 'package:expense_tracker/controllers/expense_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
+
 import '../database/db_provider.dart';
-import '../providers/expense_provider.dart';
 import '../widgets/theme_switch.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -19,7 +20,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Veritabanını Sıfırla'),
-        content: const Text('Tüm harcama verilerini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
+        content: const Text(
+            'Tüm harcama verilerini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -43,8 +45,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _resetDatabase(BuildContext context) async {
     // Store the context reference before the async gap
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
-    
+    // final expenseProvider =
+    //     Provider.of<ExpenseProvider>(context, listen: false);
+
+    final ExpenseController controller = Get.find();
+
     setState(() {
       _isResetting = true;
     });
@@ -52,11 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       // Delete all expenses from the database
       await DbProvider.instance.deleteAll();
-      
+
       // Refresh the expense provider
       if (mounted) {
-        await expenseProvider.loadExpenses();
-        
+        await controller.loadExpenses();
+
         // Show success message
         if (mounted) {
           scaffoldMessenger.showSnackBar(
@@ -91,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 16),
-          
+
           // App info card
           Card(
             margin: const EdgeInsets.all(16),
@@ -129,9 +134,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          
+
           const Divider(),
-          
+
           // Theme settings
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -144,27 +149,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const ThemeSwitch(),
-          
+
           const Divider(),
-          
+
           // About section
           const ListTile(
             leading: Icon(Icons.info),
             title: Text('Hakkında'),
             subtitle: Text('Bu uygulama hakkında daha fazla bilgi edinin'),
           ),
-          
+
           const ListTile(
             leading: Icon(Icons.code),
             title: Text('Sürüm'),
             subtitle: Text('1.0.0'),
           ),
-          
+
           const Divider(),
-          
+
           // Database reset option
           ListTile(
-            leading: _isResetting 
+            leading: _isResetting
                 ? const SizedBox(
                     width: 24,
                     height: 24,

@@ -1,8 +1,9 @@
+import 'package:expense_tracker/controllers/expense_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+
 import '../models/expense.dart';
-import '../providers/expense_provider.dart';
 
 class ExpenseFormScreen extends StatefulWidget {
   final Expense? expense;
@@ -17,7 +18,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  
+
   DateTime _selectedDate = DateTime.now();
   ExpenseCategory _selectedCategory = ExpenseCategory.food;
   bool _isEditing = false;
@@ -25,7 +26,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.expense != null) {
       _isEditing = true;
       _titleController.text = widget.expense!.title;
@@ -71,7 +72,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Amount field
               TextFormField(
                 controller: _amountController,
@@ -80,7 +81,8 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.attach_money),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir tutar girin';
@@ -95,7 +97,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Date picker
               InkWell(
                 onTap: _selectDate,
@@ -111,7 +113,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Category dropdown
               DropdownButtonFormField<ExpenseCategory>(
                 value: _selectedCategory,
@@ -145,7 +147,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                       icon = Icons.more_horiz;
                       break;
                   }
-                  
+
                   return DropdownMenuItem<ExpenseCategory>(
                     value: category,
                     child: Row(
@@ -166,7 +168,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                 },
               ),
               const SizedBox(height: 32),
-              
+
               // Submit button
               SizedBox(
                 width: double.infinity,
@@ -193,7 +195,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    
+
     if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
         _selectedDate = pickedDate;
@@ -222,8 +224,11 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
 
   void _saveExpense() {
     if (_formKey.currentState!.validate()) {
-      final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
-      
+      // final expenseProvider =
+      //     Provider.of<ExpenseProvider>(context, listen: false);
+
+      final ExpenseController controller = Get.find();
+
       final expense = Expense(
         id: _isEditing ? widget.expense!.id : null,
         title: _titleController.text,
@@ -231,13 +236,13 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
         date: _selectedDate,
         category: _selectedCategory,
       );
-      
+
       if (_isEditing) {
-        expenseProvider.updateExpense(expense);
+        controller.updateExpense(expense);
       } else {
-        expenseProvider.addExpense(expense);
+        controller.addExpense(expense);
       }
-      
+
       Navigator.pop(context);
     }
   }
